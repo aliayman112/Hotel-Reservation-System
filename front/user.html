@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book &amp; Stay — User Portal</title>
+<!-- Bootstrap CSS (Required by project spec) -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1B2430;
+    --ink-soft:#26313F;
+    --paper:#FAF9F4;
+    --card:#FFFFFF;
+    --line:#E6E2D8;
+    --text:#2A2F38;
+    --text-dim:#6B7280;
+    --brass:#B8863B;
+    --brass-dark:#96692C;
+    --brass-soft:#EFE2C9;
+    --forest:#2F5233;
+    --forest-soft:#E4EDE3;
+    --rust:#A6432D;
+    --rust-soft:#F4E3DE;
+    --radius:10px;
+  }
+
+  body {
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--paper);
+    color:var(--text);
+    display:flex;
+    min-height:100vh;
+  }
+  h1,h2,h3,.brand{ font-family:'Fraunces',serif; }
+
+  /* ---------- Nav rail ---------- */
+  .nav {
+    width:220px;
+    background:var(--ink);
+    color:#D8DEE6;
+    flex-shrink:0;
+    padding:24px 16px;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+  }
+  .brand {
+    color:#fff;
+    font-size:20px;
+    font-weight:600;
+    margin:0 8px 28px;
+    text-decoration: none;
+  }
+  .brand span{ color:var(--brass); }
+  .nav-group-label{
+    font-size:11px; font-weight:600; letter-spacing:.03em; color:#5C6577;
+    margin:18px 8px 6px; text-transform: none;
+  }
+  .nav-group-label:first-of-type{ margin-top: 6px; }
+  .nav a {
+    color:#AEB7C2;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:500;
+    padding:10px 12px;
+    border-radius:8px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    cursor:pointer;
+    transition: all 0.2s;
+  }
+  .nav a:hover{ background:var(--ink-soft); color:#fff; }
+  .nav a.active{ background:var(--ink-soft); color:#fff; box-shadow:inset 3px 0 0 var(--brass); }
+  .nav .dot{ width:6px;height:6px;border-radius:50%;background:#4A5568; }
+  .nav-footer{ margin-top:auto; font-size:12px; color:#7B8494; padding:0 12px; line-height:1.5; }
+
+  /* ---------- Main Content ---------- */
+  .main{ flex:1; padding:32px 40px 60px; max-width:1180px; width: 100%; }
+  .topbar{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:28px; }
+  .topbar h1{ font-size:26px; font-weight:600; margin:0; }
+  .topbar p{ margin:4px 0 0; color:var(--text-dim); font-size:14px; }
+
+  /* Buttons */
+  .btn-custom {
+    font-family:'Inter',sans-serif; font-size:13.5px; font-weight:600;
+    border:none; border-radius:8px; padding:9px 16px; cursor:pointer;
+    text-decoration: none; display: inline-block;
+  }
+  .btn-brass{ background:var(--brass); color:#fff; }
+  .btn-brass:hover{ background:#A5762F; color: #fff;}
+  .btn-ghost{ background:transparent; border:1px solid var(--line); color:var(--text); }
+  .btn-ghost:hover{ background:#F1EEE5; }
+  .btn-sm-custom{ padding:6px 12px; font-size:12.5px; }
+
+  /* Section & Forms */
+  .section{ margin-bottom:44px; display: none; }
+  .section.active { display: block; animation: fadeIn 0.3s; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+  .section-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+  .section-head h2{ font-size:19px; font-weight:600; margin:0; }
+
+  .custom-card {
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    padding:24px; margin-bottom: 20px;
+  }
+  .field { margin-bottom:14px; }
+  .field label { display:block; font-size:12.5px; font-weight:600; color:var(--text-dim); margin-bottom:5px; }
+  .field input, .field select {
+    width:100%; padding:9px 11px; border:1px solid var(--line); border-radius:7px;
+    font-size:14px; font-family:'Inter',sans-serif; background: #fff;
+  }
+  .field select{ appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B7280' stroke-width='1.5' fill='none' fill-rule='evenodd'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position: right 12px center; padding-right: 32px; }
+  .field input:focus, .field select:focus { outline: none; border-color: var(--brass); box-shadow: 0 0 0 3px rgba(184,134,59,0.15); }
+
+  /* Search bar */
+  .search-bar{ display:flex; align-items:flex-end; gap:14px; flex-wrap: wrap; }
+  .search-bar .field{ margin-bottom:0; }
+  .search-field-city{ flex: 1 1 200px; }
+  .search-field-date{ flex: 0 1 150px; }
+  .search-field-guests{ flex: 0 1 130px; }
+  .search-field-rooms{ flex: 0 1 120px; }
+  .btn-search{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    background:linear-gradient(180deg, var(--brass) 0%, var(--brass-dark) 100%);
+    color:#fff; border:none; border-radius:8px; padding:11px 22px; height:41px;
+    font-family:'Inter',sans-serif; font-size:14px; font-weight:600; cursor:pointer;
+    box-shadow: 0 1px 2px rgba(27,36,48,0.15), inset 0 1px 0 rgba(255,255,255,0.15);
+    transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+    white-space: nowrap;
+  }
+  .btn-search:hover{ background:linear-gradient(180deg, #C4924A 0%, var(--brass-dark) 100%); box-shadow: 0 3px 8px rgba(150,105,44,0.35); transform: translateY(-1px); }
+  .btn-search:active{ transform: translateY(0); box-shadow: 0 1px 2px rgba(27,36,48,0.2); }
+  .btn-search svg{ width:15px; height:15px; }
+
+  /* Tables & Badges */
+  table { width:100%; border-collapse:collapse; background:var(--card); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; }
+  thead th { text-align:left; font-size:12px; font-weight:600; color:var(--text-dim); padding:12px 16px; border-bottom:1px solid var(--line); background:#FBFAF7; }
+  tbody td { padding:13px 16px; font-size:14px; border-bottom:1px solid var(--line); vertical-align:middle; }
+  tbody tr:last-child td{ border-bottom:none; }
+  tbody tr:hover{ background:#FBFAF7; }
+  .guest{ font-weight:600; }
+  .muted{ color:var(--text-dim); font-size:13px; }
+
+  .badge-custom { display:inline-block; font-size:12px; font-weight:600; padding:3px 10px; border-radius:999px; }
+  .badge-pending{ background:var(--brass-soft); color:#8A6425; }
+  .badge-confirmed{ background:var(--forest-soft); color:var(--forest); }
+  .badge-rejected{ background:var(--rust-soft); color:var(--rust); }
+  .badge-cancelled{ background:#EDEDED; color:#6B7280; }
+
+  /* Hotel Listing Cards */
+  .hotel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+  .hotel-item { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; display: flex; flex-direction: column; }
+  .hotel-item-image{ width:100%; height:170px; overflow:hidden; background:#EFECE3; }
+  .hotel-item-image img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .hotel-item-body { padding: 20px; flex: 1; }
+  .hotel-city-tag{ display:inline-block; font-size:11.5px; font-weight:600; color:var(--brass-dark); background:var(--brass-soft); padding:2px 9px; border-radius:999px; margin-bottom:8px; }
+  .hotel-rating{ font-size:13px; font-weight:600; color:var(--forest); margin:4px 0 6px; }
+  .hotel-price { font-size: 18px; font-weight: 600; color: var(--brass); margin: 10px 0; }
+
+  /* Hotel details hero */
+  .detail-hero-wrap{ width:100%; height:260px; border-radius:var(--radius); overflow:hidden; background:#EFECE3; margin-bottom:20px; }
+  .detail-hero{ width:100%; height:100%; object-fit:cover; display:block; }
+
+  /* Room cards (booking.com style) */
+  .room-grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:20px; }
+  .room-card{ background:var(--card); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; display:flex; flex-direction:column; }
+  .room-card-image{ width:100%; height:170px; overflow:hidden; background:#EFECE3; }
+  .room-card-image img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .room-card-body{ padding:18px; flex:1; display:flex; flex-direction:column; }
+  .room-card-top{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .room-desc{ font-size:13.5px; color:var(--text-dim); margin:8px 0; line-height:1.5; }
+  .room-meta{ display:flex; gap:14px; font-size:13px; color:var(--text); margin-bottom:6px; }
+  .room-fit-warning{ font-size:12px; color:var(--rust); margin-bottom:6px; }
+  .room-card-footer{ margin-top:auto; display:flex; align-items:center; justify-content:space-between; padding-top:10px; border-top:1px solid var(--line); }
+  .room-price{ font-size:17px; font-weight:600; color:var(--brass); }
+  .badge-room-type{ display:inline-block; font-size:11px; font-weight:600; padding:2px 8px; border-radius:999px; background:var(--brass-soft); color:#8A6425; white-space:nowrap; }
+
+  /* Deals & Offers (reuses hotel-item card styling) */
+  .deal-card{ transition: box-shadow .15s ease, background .15s ease, border-color .15s ease; }
+  .deal-card.selected{ border-color:var(--brass); background:var(--brass-soft); box-shadow: inset 0 0 0 1px var(--brass); }
+  .faq-item{ padding:16px 0; border-bottom:1px solid var(--line); }
+  .faq-item:last-child{ border-bottom:none; }
+  .faq-item h3{ font-size:14.5px; margin:0 0 4px; }
+  .faq-item p{ font-size:13.5px; color:var(--text-dim); margin:0; line-height:1.5; }
+
+  /* Toast Notification */
+  .toast-custom {
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--ink); color:#fff; padding:11px 20px; border-radius:8px; font-size:13.5px;
+    opacity:0; pointer-events:none; transition:all .25s ease; z-index:60;
+  }
+  .toast-custom.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+  /* Custom date picker (no external library — nothing to fail to load) */
+  .field input[readonly]{ cursor: pointer; background: #fff; }
+  .date-popover{
+    position:absolute; z-index:80; background:var(--card); border:1px solid var(--line);
+    border-radius:10px; box-shadow:0 8px 24px rgba(27,36,48,0.16); padding:14px; width:264px;
+    font-family:'Inter',sans-serif;
+  }
+  .dp-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+  .dp-title-group{ display:flex; align-items:center; gap:6px; }
+  .dp-title{ font-size:13.5px; font-weight:600; color:var(--ink); }
+  .dp-year-select{ font-size:12.5px; font-weight:600; border:1px solid var(--line); border-radius:6px; padding:2px 6px; background:#fff; color:var(--ink); cursor:pointer; }
+  .dp-nav{ background:transparent; border:1px solid var(--line); border-radius:6px; width:26px; height:26px; cursor:pointer; font-size:14px; color:var(--text-dim); line-height:1; }
+  .dp-nav:hover{ background:#F1EEE5; color:var(--ink); }
+  .dp-weekdays{ display:grid; grid-template-columns:repeat(7,1fr); margin-bottom:4px; }
+  .dp-weekdays span{ text-align:center; font-size:11px; font-weight:600; color:var(--text-dim); }
+  .dp-days{ display:grid; grid-template-columns:repeat(7,1fr); gap:2px; }
+  .dp-day{ text-align:center; font-size:13px; padding:7px 0; border-radius:6px; cursor:pointer; color:var(--text); }
+  .dp-day:hover:not(.dp-disabled):not(.dp-empty){ background:var(--brass-soft); }
+  .dp-day.dp-selected{ background:var(--brass); color:#fff; font-weight:600; }
+  .dp-day.dp-today:not(.dp-selected){ box-shadow: inset 0 0 0 1px var(--brass); }
+  .dp-day.dp-disabled{ color:#C7CBD1; cursor:not-allowed; }
+  .dp-day.dp-empty{ cursor:default; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="brand">Book<span>&amp;</span>Stay</div>
+
+  <a id="nav-home" class="active" onclick="navigate('home')"><span class="dot"></span> Home</a>
+
+  <div class="nav-group-label">Browse</div>
+  <a id="nav-search" onclick="navigate('search')"><span class="dot"></span> Find a Hotel</a>
+  <a id="nav-deals" onclick="navigate('deals')"><span class="dot"></span> Deals &amp; Offers</a>
+
+  <div class="nav-group-label">Account</div>
+  <a id="nav-bookings" onclick="navigate('bookings')"><span class="dot"></span> My Bookings</a>
+  <a id="nav-login" onclick="navigate('login')"><span class="dot"></span> Login</a>
+  <a id="nav-logout" style="display:none;" onclick="logout()"><span class="dot"></span> Logout</a>
+
+  <div class="nav-group-label">Help</div>
+  <a id="nav-support" onclick="navigate('support')"><span class="dot"></span> Help &amp; Support</a>
+  <a id="nav-about" onclick="navigate('about')"><span class="dot"></span> About Us</a>
+
+  <div class="nav-footer">User Reservation Portal<br>Person 1 — reference build</div>
+</nav>
+
+<main class="main">
+
+  <!-- 0. Home Section -->
+  <div id="view-home" class="section active">
+    <div class="topbar">
+      <div>
+        <h1>Discover Your Next Stay</h1>
+        <p>Trending hotels and fresh picks across our destinations.</p>
+      </div>
+    </div>
+
+    <div class="section-head">
+      <h2>Trending Hotels</h2>
+      <span class="muted">Popular with recent travelers</span>
+    </div>
+    <div class="hotel-grid" id="trending-list"></div>
+
+    <div class="section-head mt-5">
+      <h2>Explore More</h2>
+      <button type="button" id="shuffle-btn" class="btn-custom btn-ghost btn-sm-custom">🔀 Shuffle</button>
+    </div>
+    <div class="hotel-grid" id="random-list"></div>
+  </div>
+
+  <!-- 1. Login Section -->
+  <div id="view-login" class="section">
+    <div class="topbar">
+      <div>
+        <h1>Welcome Back</h1>
+        <p>Log in or register to manage your reservations.</p>
+      </div>
+    </div>
+    <div class="custom-card" style="max-width: 400px;">
+      <form id="login-form">
+        <div class="field">
+          <label>Email address</label>
+          <input type="email" id="login-email" required placeholder="user@example.com">
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input type="password" id="login-password" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn-custom btn-brass w-100 mt-2">Login to Account</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. Search Section -->
+  <div id="view-search" class="section">
+    <div class="topbar">
+      <div>
+        <h1>Find a Hotel</h1>
+        <p>Choose a destination, dates, guests, and rooms.</p>
+      </div>
+    </div>
+    <div class="custom-card">
+      <div class="search-bar">
+        <div class="field search-field-city">
+          <label>Destination</label>
+          <select id="search-city">
+            <option value="">Select a city</option>
+          </select>
+        </div>
+        <div class="field search-field-date">
+          <label>Check-in</label>
+          <input type="text" id="search-checkin" placeholder="dd/mm/yyyy" autocomplete="off" readonly required>
+        </div>
+        <div class="field search-field-date">
+          <label>Check-out</label>
+          <input type="text" id="search-checkout" placeholder="dd/mm/yyyy" autocomplete="off" readonly required>
+        </div>
+        <div class="field search-field-guests">
+          <label>Guests</label>
+          <select id="search-guests">
+            <option value="1">1 Guest</option>
+            <option value="2" selected>2 Guests</option>
+            <option value="3">3 Guests</option>
+            <option value="4">4 Guests</option>
+            <option value="5">5 Guests</option>
+            <option value="6">6 Guests</option>
+          </select>
+        </div>
+        <div class="field search-field-rooms">
+          <label>Rooms</label>
+          <select id="search-rooms">
+            <option value="1" selected>1 Room</option>
+            <option value="2">2 Rooms</option>
+            <option value="3">3 Rooms</option>
+            <option value="4">4 Rooms</option>
+          </select>
+        </div>
+        <button type="button" id="search-btn" class="btn-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Search
+        </button>
+      </div>
+    </div>
+
+    <div id="search-results-container" style="display: none;">
+      <div class="section-head mt-5">
+        <h2 id="results-title">Search Results</h2>
+        <span class="muted" id="results-count"></span>
+      </div>
+      <div class="hotel-grid" id="hotel-list">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Hotel Details Section -->
+  <div id="view-details" class="section">
+    <button class="btn-custom btn-ghost btn-sm-custom mb-3" onclick="navigate('search')">← Back to search</button>
+    <div class="detail-hero-wrap">
+      <img id="detail-hero" class="detail-hero" src="" alt="">
+    </div>
+    <div class="topbar">
+      <div>
+        <h1 id="detail-title">Hotel Name</h1>
+        <p id="detail-location" class="muted"></p>
+        <p id="detail-desc" class="muted" style="margin-top:6px; max-width:640px;"></p>
+      </div>
+    </div>
+
+    <div class="section-head mt-4">
+      <h2>Available Rooms</h2>
+    </div>
+    <div class="room-grid" id="room-list">
+      <!-- Injected via JS -->
+    </div>
+  </div>
+
+  <!-- 4. My Bookings Section -->
+  <div id="view-bookings" class="section">
+    <div class="topbar">
+      <div>
+        <h1>My Bookings</h1>
+        <p>View your reservation history and manage active stays.</p>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>Hotel / Room</th><th>Dates</th><th>Total</th><th>Status</th><th>Action</th></tr>
+      </thead>
+      <tbody id="bookings-body">
+        <!-- Injected via JS -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 5. Deals & Offers Section -->
+  <div id="view-deals" class="section">
+    <div class="topbar">
+      <div>
+        <h1>Deals &amp; Offers</h1>
+        <p>Seasonal rates pulled from live hotel data — select one to apply it.</p>
+      </div>
+    </div>
+    <div class="hotel-grid" id="deals-list">
+      <!-- Injected via JS, same card style as Trending Hotels -->
+    </div>
+  </div>
+
+  <!-- 6. Help & Support Section -->
+  <div id="view-support" class="section">
+    <div class="topbar">
+      <div>
+        <h1>Help &amp; Support</h1>
+        <p>Answers to common questions about searching, booking, and managing stays.</p>
+      </div>
+    </div>
+    <div class="custom-card">
+      <div class="faq-item">
+        <h3>How do I cancel a booking?</h3>
+        <p>Go to My Bookings and select Cancel next to any confirmed reservation.</p>
+      </div>
+      <div class="faq-item">
+        <h3>Why is my booking still pending?</h3>
+        <p>Reservations are reviewed by the hotel admin before being confirmed or rejected.</p>
+      </div>
+      <div class="faq-item">
+        <h3>Can I change my dates after booking?</h3>
+        <p>Not yet — cancel the current booking and submit a new reservation with the new dates.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. About Us Section -->
+  <div id="view-about" class="section">
+    <div class="topbar">
+      <div>
+        <h1>About Book &amp; Stay</h1>
+        <p>A simple way to find and reserve rooms across the country.</p>
+      </div>
+    </div>
+    <div class="custom-card">
+      <p style="margin:0; font-size:14px; line-height:1.6;">Book &amp; Stay connects travelers with hotels in Cairo, Alexandria, Giza, Luxor, Aswan, Hurghada, Sharm El Sheikh, and Dahab. Search by destination and dates, review room options, and submit a reservation request — the hotel confirms availability and you're ready to go.</p>
+    </div>
+  </div>
+
+</main>
+
+<div class="toast-custom" id="toast"></div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Frontend Logic -->
+<script src="face.js"></script>
+</body>
+</html>
